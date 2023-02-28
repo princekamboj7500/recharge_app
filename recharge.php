@@ -97,12 +97,41 @@ for ($i = 0; $i <= $subcount-1; $i++) {
     $phone = $taddr['phone'];
     $province = $taddr['province'];
     $zip = $taddr['zip'];
+    $lastdate = date("Y-m-d");
+    
+    
+    $curlz = curl_init();
+
+  curl_setopt_array($curlz, array(
+  CURLOPT_URL => "https://api.rechargeapps.com/charges?purchase_item_ids=$subid&status=success&processed_at_max=$lastdate",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 0,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'GET',
+  CURLOPT_HTTPHEADER => array(
+     "X-Recharge-Access-Token: $tolken",
+     "X-Recharge-Version: $version"
+    
+  ),
+));
+
+$responsez = curl_exec($curlz);
+
+curl_close($curlz);
+$objz = json_decode($responsez, true);
+$lastcharge = ($objz["charges"][0]["processed_at"]);
+    
+$getOnlyDate = date('Y-m-d',strtotime($lastcharge));
 
    echo '<div class="content" substatus='.$substatus.' cid='.$cid.' has='.$hash.' pymtid='.$pymtid.'>
    <div class="title">'.$subprotitle.'</div>
    <div class="qty">Quantity: <span>'.$subqty.'</span></div>
    <div class="frq">Frequency: Every <span>'.$frq.' '.$date.'</span></div>
    <div class="nxtdel">Next Delivery: <span id="nxtdelv">'.$nextdel.' </span></div>
+   <div class="lastdel">Last Delivery: <span id="lastdel">'.$getOnlyDate.' </span></div>
  <input id="totaladd" zip="'.$zip.'" province="'.$province.'" phone="'.$phone.'" last_name="'.$last_name.'" first_name="'.$first_name.'" country_code="'.$country_code.'" company="'.$company.'" city="'.$city.'" address2="'.$address2.'" address1="'.$address1.'" value="'.$address1.','.$address2.','.$city.','.$company.','.$country_code.','.$first_name.','.$last_name.','.$phone.','.$province.','.$zip.'" hidden>
    <div class="action-btn active">
     <span class="manage_subs" addid="'.$address.'" subid="'.$subid.'" email="'.$cmail.'" dt="'.$nextdel.'">Manage</span>
