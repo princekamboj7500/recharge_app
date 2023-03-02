@@ -34,7 +34,7 @@ $hash = ($obj["customers"][0]["hash"]);
 $curl2 = curl_init();
 
 curl_setopt_array($curl2, array(
-  CURLOPT_URL => "https://api.rechargeapps.com/subscriptions?customer_id=$cid",
+  CURLOPT_URL => "https://api.rechargeapps.com/onetimes?customer_id=$cid",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -52,18 +52,16 @@ $response2 = curl_exec($curl2);
 
 curl_close($curl2);
 $obj2 = json_decode($response2, true);
-$totalsub = ($obj2["subscriptions"]);
+$totalsub = ($obj2["onetimes"]);
 $subcount = count($totalsub);
 
 for ($i = 0; $i <= $subcount-1; $i++) {
-  $subid = $obj2["subscriptions"][$i]["id"];
-  $subprotitle = $obj2["subscriptions"][$i]["product_title"];
-  $subqty = $obj2["subscriptions"][$i]["quantity"];
-  $nextdel = $obj2["subscriptions"][$i]["next_charge_scheduled_at"];
-  $frq = $obj2["subscriptions"][$i]["order_interval_frequency"];
-  $date = ($obj2["subscriptions"][$i]["order_interval_unit"]);
-  $address = $obj2["subscriptions"][$i]["address_id"];
-  $substatus = $obj2["subscriptions"][$i]["status"];
+  $subid = $obj2["onetimes"][$i]["id"];
+  $subprotitle = $obj2["onetimes"][$i]["product_title"];
+  $subqty = $obj2["onetimes"][$i]["quantity"];
+  $nextdel = $obj2["onetimes"][$i]["next_charge_scheduled_at"];
+  $frq = $obj2["onetimes"][$i]["order_interval_frequency"];
+  $address = $obj2["onetimes"][$i]["address_id"];
   
   $curl3 = curl_init();
 
@@ -129,18 +127,11 @@ $getOnlyDate = date('Y-m-d',strtotime($lastcharge));
    echo '<div class="content" substatus='.$substatus.' cid='.$cid.' has='.$hash.' pymtid='.$pymtid.'>
    <div class="title">'.$subprotitle.'</div>
    <div class="qty">Quantity: <span>'.$subqty.'</span></div>
-   <div class="frq">Frequency: Every <span>'.$frq.' '.$date.'</span></div>
    <div class="nxtdel">Next Delivery: <span id="nxtdelv">'.$nextdel.' </span></div>
    <div class="lastdel">Last Delivery: <span id="lastdel">'.$getOnlyDate.' </span></div>
  <input id="totaladd" zip="'.$zip.'" province="'.$province.'" phone="'.$phone.'" last_name="'.$last_name.'" first_name="'.$first_name.'" country_code="'.$country_code.'" company="'.$company.'" city="'.$city.'" address2="'.$address2.'" address1="'.$address1.'" value="'.$address1.','.$address2.','.$city.','.$company.','.$country_code.','.$first_name.','.$last_name.','.$phone.','.$province.','.$zip.'" hidden>
-   <div class="action-btn active">
-    <span class="manage_subs" addid="'.$address.'" subid="'.$subid.'" email="'.$cmail.'" dt="'.$nextdel.'">Manage</span>
-    <span class="skip_next">Skip Next</span>
-    <span class="send_now">Send now</span>
-   </div>
-   <div class="action-btn canceled">
-    <span class="reactivate" addid="'.$address.'" subid="'.$subid.'" email="'.$cmail.'" dt="'.$nextdel.'">Reactivate</span>
-   </div>
+
+
    </div>';
   
 }
